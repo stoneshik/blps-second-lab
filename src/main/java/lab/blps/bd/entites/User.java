@@ -23,7 +23,7 @@ public class User{
     private Long id;
     @NotBlank
     @Column(name = "email")
-    private String email;
+    private String login;
     @NotBlank
     @Size(max = 120)
     @Column(name = "password")
@@ -36,7 +36,7 @@ public class User{
     private String description;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
-        name = "userroles",
+        name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -44,8 +44,8 @@ public class User{
 
     public User() {}
 
-    public User(String email, String password) {
-        this.email = email;
+    public User(String login, String password) {
+        this.login = login;
         this.password = password;
     }
 

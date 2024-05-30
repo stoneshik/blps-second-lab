@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    @Value("${token.refresh_time}")
+    @Value("${tokenRefreshTime}")
     private Long refreshTokenDurationMs;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
@@ -37,7 +37,10 @@ public class RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new signin request");
+            throw new TokenRefreshException(
+                token.getToken(),
+                "Срок действия токена обновления истек. Пожалуйста, сделайте новый запрос на вход"
+            );
         }
 
         return token;
