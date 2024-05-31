@@ -1,6 +1,7 @@
 package lab.blps.security.bd.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -34,6 +35,9 @@ public class User{
     private String surname;
     @Column(name = "description")
     private String description;
+    @Column(name = "amount_request", nullable = false)
+    @Min(value = 0)
+    private Integer amountRequest;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
         name = "user_roles",
@@ -44,9 +48,10 @@ public class User{
 
     public User() {}
 
-    public User(String login, String password) {
+    public User(String login, String password, Integer amountRequest) {
         this.login = login;
         this.password = password;
+        this.amountRequest = amountRequest;
     }
 
 }

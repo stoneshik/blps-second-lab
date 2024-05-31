@@ -1,10 +1,7 @@
 package lab.blps.controllers;
 
 import lab.blps.dto.ErrorMessageDto;
-import lab.blps.exceptions.ResourceIsAlreadyExistsException;
-import lab.blps.exceptions.ResourceIsNotValidException;
-import lab.blps.exceptions.ResourceNotFoundException;
-import lab.blps.exceptions.TokenRefreshException;
+import lab.blps.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -101,6 +98,45 @@ public class ExceptionHandlerController {
             request.getDescription(false)
         );
         LOGGER.warn("Your token is expired or you need to authorize: {}", message);
+        return message;
+    }
+
+    @ExceptionHandler(WrongFormatUserRequestException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessageDto wrongFormat(Exception ex, WebRequest request) {
+        ErrorMessageDto message = new ErrorMessageDto(
+            HttpStatus.FORBIDDEN.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false)
+        );
+        LOGGER.warn("Wrong format of user request: {}", message);
+        return message;
+    }
+
+    @ExceptionHandler(IncorrectEnumConstant.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessageDto incorrectEnumConstant(Exception ex, WebRequest request) {
+        ErrorMessageDto message = new ErrorMessageDto(
+            HttpStatus.FORBIDDEN.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false)
+        );
+        LOGGER.warn("Incorrect enum constant: {}", message);
+        return message;
+    }
+
+    @ExceptionHandler(NotEnoughAmountRequestException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessageDto notEnoughAmountRequest(Exception ex, WebRequest request) {
+        ErrorMessageDto message = new ErrorMessageDto(
+            HttpStatus.FORBIDDEN.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false)
+        );
+        LOGGER.warn("Not enough amount request: {}", message);
         return message;
     }
 

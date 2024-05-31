@@ -18,4 +18,6 @@ public class TaxRegimeChoiceDto {
     @Min(0L)
     @JsonProperty("maxNumberEmployees")
     private Long maxNumberEmployees;
+    @JsonProperty("userId")
+    private Long userId;
 }

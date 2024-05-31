@@ -94,7 +94,8 @@ public class AuthorizationController {
         }
         User user = new User(
             signUpRequest.getLogin(),
-            encoder.encode(signUpRequest.getPassword())
+            encoder.encode(signUpRequest.getPassword()),
+            10
         );
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
