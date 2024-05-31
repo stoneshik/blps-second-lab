@@ -4,7 +4,7 @@ import lab.blps.main.bd.entites.TaxFeatures;
 import lab.blps.main.bd.entites.TaxpayerCategories;
 import lab.blps.main.bd.entites.enums.TaxFeatureEnum;
 import lab.blps.main.bd.entites.enums.TaxpayerCategoryEnum;
-import lab.blps.main.services.dto.TaxRegimeWithFeaturesAndCategoryDto;
+import lab.blps.main.dto.TaxRegimeWithFeaturesAndCategoryDto;
 import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
 
 import java.util.ArrayList;

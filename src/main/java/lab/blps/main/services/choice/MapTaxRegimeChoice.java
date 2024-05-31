@@ -2,7 +2,7 @@ package lab.blps.main.services.choice;
 
 import lab.blps.main.bd.entites.enums.TaxFeatureEnum;
 import lab.blps.main.bd.entites.enums.TaxpayerCategoryEnum;
-import lab.blps.main.services.dto.TaxRegimeChoiceDto;
+import lab.blps.main.dto.TaxRegimeChoiceDto;
 import lab.blps.main.services.entities.TaxRegimeChoice;
 
 import java.util.ArrayList;
