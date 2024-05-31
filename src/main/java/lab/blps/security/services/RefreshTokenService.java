@@ -1,9 +1,9 @@
 package lab.blps.security.services;
 
-import lab.blps.RefreshToken;
 import lab.blps.exceptions.TokenRefreshException;
-import lab.blps.repositories.RefreshTokenRepository;
-import lab.blps.repositories.UserRepository;
+import lab.blps.security.bd.entities.RefreshToken;
+import lab.blps.security.repositories.RefreshTokenRepository;
+import lab.blps.security.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    @Value("${tokenRefreshTime}")
+    @Value("${token.refresh_time}")
     private Long refreshTokenDurationMs;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;

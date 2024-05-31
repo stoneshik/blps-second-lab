@@ -1,8 +1,8 @@
 package lab.blps.security.services;
 
-import lab.blps.bd.entites.User;
-import lab.blps.repositories.UserRepository;
+import lab.blps.security.bd.entities.User;
 import lab.blps.security.model.UserDetailsImpl;
+import lab.blps.security.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

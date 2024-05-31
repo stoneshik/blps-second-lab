@@ -1,13 +1,14 @@
 package lab.blps.controllers;
 
 import jakarta.validation.Valid;
-import lab.blps.services.MapTaxRegimeWithFeaturesAndCategory;
-import lab.blps.services.choice.ChoiceTaxRegimeService;
-import lab.blps.services.choice.MapTaxRegimeChoice;
-import lab.blps.services.dto.TaxRegimeChoiceDto;
-import lab.blps.services.dto.TaxRegimeWithFeaturesAndCategoryDto;
-import lab.blps.services.entities.TaxRegimeChoice;
-import lab.blps.services.entities.TaxRegimeWithFeaturesAndCategory;
+import lab.blps.dto.MessageResponseDto;
+import lab.blps.main.services.MapTaxRegimeWithFeaturesAndCategory;
+import lab.blps.main.services.choice.ChoiceTaxRegimeService;
+import lab.blps.main.services.choice.MapTaxRegimeChoice;
+import lab.blps.main.services.dto.TaxRegimeChoiceDto;
+import lab.blps.main.services.dto.TaxRegimeWithFeaturesAndCategoryDto;
+import lab.blps.main.services.entities.TaxRegimeChoice;
+import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,12 +35,12 @@ public class ChoiceTaxRegimeController {
             taxRegimeChoice = MapTaxRegimeChoice.mapFromDto(taxRegimeChoiceDto);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(
-                    new ResponseMessageWrapper("Неправильный формат запроса"),
+                    new MessageResponseDto("Неправильный формат запроса"),
                     HttpStatus.BAD_REQUEST
             );
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(
-                    new ResponseMessageWrapper("Передана неправильная константа"),
+                    new MessageResponseDto("Передана неправильная константа"),
                     HttpStatus.BAD_REQUEST
             );
         }

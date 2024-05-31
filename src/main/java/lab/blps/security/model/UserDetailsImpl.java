@@ -1,7 +1,7 @@
 package lab.blps.security.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lab.blps.bd.entites.User;
+import lab.blps.security.bd.entities.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
