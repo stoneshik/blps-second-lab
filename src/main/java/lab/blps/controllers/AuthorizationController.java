@@ -59,8 +59,15 @@ public class AuthorizationController {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-        return ResponseEntity.ok(new JwtResponseDto(jwt, refreshToken.getToken(), userDetails.getId(),
-            userDetails.getUsername(), roles));
+        return ResponseEntity.ok(
+            new JwtResponseDto(
+                jwt,
+                refreshToken.getToken(),
+                userDetails.getId(),
+                userDetails.getUsername(),
+                roles
+            )
+        );
 
     }
 

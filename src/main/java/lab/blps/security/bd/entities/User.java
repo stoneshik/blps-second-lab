@@ -18,8 +18,8 @@ import java.util.Set;
 )
 public class User{
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @Column(name = "id", columnDefinition = "serial", nullable = false)
     private Long id;
     @NotBlank
     @Column(name = "login")

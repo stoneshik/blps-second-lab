@@ -12,6 +12,6 @@ public class SignUpRequestDto {
     private String login;
     private Set<String> role;
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 4, max = 40)
     private String password;
 }

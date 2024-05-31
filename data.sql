@@ -1,3 +1,8 @@
+INSERT INTO roles(id, name)
+VALUES
+    (default, 'ROLE_ADMIN'),
+    (default, 'ROLE_USER')
+    ;
 INSERT INTO tax_regime (
     id,
     title,
