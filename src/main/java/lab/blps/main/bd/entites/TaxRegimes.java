@@ -2,21 +2,21 @@ package lab.blps.main.bd.entites;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "tax_regime")
-public class TaxRegime {
+public class TaxRegimes {
     @Id
     @GeneratedValue
     @Column(name = "id", columnDefinition = "serial", nullable = false)
     private Long id;
-    @NotNull
+    @NotBlank
     @Column(name = "title", length = 100)
     private String title;
-    @NotNull
+    @NotBlank
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Min(value = 100L)

@@ -1,6 +1,7 @@
-package lab.blps.main.services.choice;
+package lab.blps.main.services;
 
-import lab.blps.main.repositories.TaxRegimeRepository;
+import lab.blps.main.repositories.TaxRegimesRepository;
+import lab.blps.main.services.choice.*;
 import lab.blps.main.services.entities.TaxRegimeChoice;
 import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChoiceTaxRegimeService {
-    private final TaxRegimeRepository taxRegimeRepository;
+    private final TaxRegimesRepository taxRegimesRepository;
 
     public List<TaxRegimeWithFeaturesAndCategory> choice(TaxRegimeChoice taxRegimeChoice) {
         ChoiceFilter chosenFilter = chooseFilter(taxRegimeChoice);
@@ -22,15 +23,15 @@ public class ChoiceTaxRegimeService {
         ChoiceFilter chosenFilter;
         if (taxRegimeChoice.getTaxpayerCategories().isEmpty()) {
             if (taxRegimeChoice.getTaxFeatures().isEmpty()) {
-                chosenFilter = new ChoiceFilterOnlyByMaxAnnualIncomeThousandsAndMaxNumberEmployees(taxRegimeRepository);
+                chosenFilter = new ChoiceFilterOnlyByMaxAnnualIncomeThousandsAndMaxNumberEmployees(taxRegimesRepository);
             } else {
-                chosenFilter = new ChoiceFilterByTaxFeatures(taxRegimeRepository);
+                chosenFilter = new ChoiceFilterByTaxFeatures(taxRegimesRepository);
             }
         } else {
             if (taxRegimeChoice.getTaxFeatures().isEmpty()) {
-                chosenFilter = new ChoiceFilterByTaxpayerCategory(taxRegimeRepository);
+                chosenFilter = new ChoiceFilterByTaxpayerCategory(taxRegimesRepository);
             } else {
-                chosenFilter = new ChoiceFilterByTaxpayerCategoryAndTaxFeature(taxRegimeRepository);
+                chosenFilter = new ChoiceFilterByTaxpayerCategoryAndTaxFeature(taxRegimesRepository);
             }
         }
         return chosenFilter;

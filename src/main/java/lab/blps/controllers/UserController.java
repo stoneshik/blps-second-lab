@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/api/load-amount-request")
+    @GetMapping("/api/amount-request/get")
     public ResponseEntity<?> loadAmountRequest(@Valid @RequestBody AmountRequestDto amountRequestDto) {
         Integer amountRequest = userService.loadAmountRequest(amountRequestDto.getUserId());
         return ResponseEntity.ok(new AmountRequestResponseDto(amountRequestDto.getUserId(), amountRequest));

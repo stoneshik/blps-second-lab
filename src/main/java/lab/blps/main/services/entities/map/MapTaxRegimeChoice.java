@@ -1,4 +1,4 @@
-package lab.blps.main.services.choice;
+package lab.blps.main.services.entities.map;
 
 import lab.blps.main.bd.entites.enums.TaxFeatureEnum;
 import lab.blps.main.bd.entites.enums.TaxpayerCategoryEnum;

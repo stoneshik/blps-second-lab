@@ -1,4 +1,4 @@
-package lab.blps.main.services;
+package lab.blps.main.services.entities.map;
 
 import lab.blps.main.bd.entites.TaxFeatures;
 import lab.blps.main.bd.entites.TaxpayerCategories;

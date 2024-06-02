@@ -15,7 +15,7 @@ public class TaxpayerCategories {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tax_regime_id", nullable = false)
-    private TaxRegime taxRegime;
+    private TaxRegimes taxRegimes;
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "taxpayer_category")

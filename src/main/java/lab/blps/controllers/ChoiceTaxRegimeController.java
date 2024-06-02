@@ -6,11 +6,11 @@ import lab.blps.exceptions.NotEnoughAmountRequestException;
 import lab.blps.exceptions.WrongFormatUserRequestException;
 import lab.blps.main.dto.TaxRegimeChoiceDto;
 import lab.blps.main.dto.TaxRegimeWithFeaturesAndCategoryDto;
-import lab.blps.main.services.MapTaxRegimeWithFeaturesAndCategory;
-import lab.blps.main.services.choice.ChoiceTaxRegimeService;
-import lab.blps.main.services.choice.MapTaxRegimeChoice;
+import lab.blps.main.services.ChoiceTaxRegimeService;
 import lab.blps.main.services.entities.TaxRegimeChoice;
 import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
+import lab.blps.main.services.entities.map.MapTaxRegimeChoice;
+import lab.blps.main.services.entities.map.MapTaxRegimeWithFeaturesAndCategory;
 import lab.blps.security.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,7 +36,7 @@ public class ChoiceTaxRegimeController {
             path = "/api/choice-tax-regime",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> choiceTaxRegime(@Valid @RequestBody TaxRegimeChoiceDto taxRegimeChoiceDto) {
+    public ResponseEntity<?> choiceTaxRegime(@Valid @RequestBody TaxRegimeChoiceDto taxRegimeChoiceDto) {
         TaxRegimeChoice taxRegimeChoice;
         try {
             taxRegimeChoice = MapTaxRegimeChoice.mapFromDto(taxRegimeChoiceDto);
@@ -45,19 +45,23 @@ public class ChoiceTaxRegimeController {
         } catch (IllegalArgumentException e) {
             throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
         }
-        if (!userService.isAmountRequestEnough(taxRegimeChoiceDto.getUserId())) {
-            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
-        }
-        try {
-            userService.subAmountRequest(taxRegimeChoiceDto.getUserId(), 1);
-        } catch (DataIntegrityViolationException e) {
-            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
-        }
+        requestFee(taxRegimeChoiceDto.getUserId(), 1);
         List<TaxRegimeWithFeaturesAndCategory> taxRegimes = choiceTaxRegimeService.choice(taxRegimeChoice);
         List<TaxRegimeWithFeaturesAndCategoryDto> taxRegimeDtoList = new ArrayList<>();
         for (TaxRegimeWithFeaturesAndCategory taxRegime : taxRegimes) {
             taxRegimeDtoList.add(MapTaxRegimeWithFeaturesAndCategory.mapToDto(taxRegime));
         }
         return new ResponseEntity<>(taxRegimeDtoList, HttpStatus.OK);
+    }
+
+    private void requestFee(Long userId, Integer requestFee) {
+        if (!userService.isAmountRequestEnough(userId)) {
+            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
+        }
+        try {
+            userService.subAmountRequest(userId, requestFee);
+        } catch (DataIntegrityViolationException e) {
+            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
+        }
     }
 }

@@ -1,8 +1,8 @@
 package lab.blps.main.services.choice;
 
 import lab.blps.main.bd.entites.TaxFeatures;
-import lab.blps.main.bd.entites.TaxRegime;
-import lab.blps.main.repositories.TaxRegimeRepository;
+import lab.blps.main.bd.entites.TaxRegimes;
+import lab.blps.main.repositories.TaxRegimesRepository;
 import lab.blps.main.services.entities.TaxRegimeChoice;
 import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +13,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class ChoiceFilterByTaxFeatures extends ChoiceFilter {
-    private final TaxRegimeRepository taxRegimeRepository;
+    private final TaxRegimesRepository taxRegimesRepository;
 
     @Override
     public List<TaxRegimeWithFeaturesAndCategory> filter(TaxRegimeChoice taxRegimeChoice) {
-        List<TaxFeatures> taxFeatures = taxRegimeRepository.findTaxFeatures(taxRegimeChoice.getTaxFeatures());
+        List<TaxFeatures> taxFeatures = taxRegimesRepository.findTaxFeatures(taxRegimeChoice.getTaxFeatures());
         List<Long> filteredTaxRegimeIds = getTaxRegimeIdsFromTaxFeatures(taxFeatures);
-        List<TaxRegime> taxRegimes = taxRegimeRepository
+        List<TaxRegimes> taxRegimes = taxRegimesRepository
                 .findByMaxAnnualIncomeThousandsAndMaxNumberEmployeesAndFilteredTaxRegimeIds(
                         taxRegimeChoice.getMaxAnnualIncomeThousands(),
                         taxRegimeChoice.getMaxNumberEmployees(),
                         filteredTaxRegimeIds
                 );
         List<TaxRegimeWithFeaturesAndCategory> taxRegimesWithFeaturesAndCategories = new ArrayList<>();
-        for (TaxRegime taxRegime : taxRegimes) {
+        for (TaxRegimes taxRegime : taxRegimes) {
             List<TaxFeatures> filteredTaxFeatures = filterTaxFeatures(
                     taxRegime,
                     taxFeatures,

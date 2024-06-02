@@ -1,7 +1,7 @@
 package lab.blps.main.services.choice;
 
 import lab.blps.main.bd.entites.TaxFeatures;
-import lab.blps.main.bd.entites.TaxRegime;
+import lab.blps.main.bd.entites.TaxRegimes;
 import lab.blps.main.bd.entites.TaxpayerCategories;
 import lab.blps.main.bd.entites.enums.TaxFeatureEnum;
 import lab.blps.main.bd.entites.enums.TaxpayerCategoryEnum;
@@ -18,25 +18,25 @@ public abstract class ChoiceFilter {
     protected List<Long> getTaxRegimeIdsFromTaxpayerCategories(List<TaxpayerCategories> taxpayerCategories) {
         return taxpayerCategories
                 .stream()
-                .map(taxpayerCategory -> taxpayerCategory.getTaxRegime().getId())
+                .map(taxpayerCategory -> taxpayerCategory.getTaxRegimes().getId())
                 .toList();
     }
 
     protected List<Long> getTaxRegimeIdsFromTaxFeatures(List<TaxFeatures> taxFeatures) {
         return taxFeatures
                 .stream()
-                .map(taxFeature -> taxFeature.getTaxRegime().getId())
+                .map(taxFeature -> taxFeature.getTaxRegimes().getId())
                 .toList();
     }
 
     protected List<TaxpayerCategories> filterTaxpayerCategory(
-            TaxRegime taxRegime,
+            TaxRegimes taxRegimes,
             List<TaxpayerCategories> taxpayerCategories,
             List<TaxpayerCategoryEnum> choiceTaxpayerCategoryEnums
     ) {
         List<TaxpayerCategories> filteredTaxpayerCategories = taxpayerCategories
                 .stream()
-                .filter(taxpayerCategory -> taxpayerCategory.getTaxRegime().getId().equals(taxRegime.getId()))
+                .filter(taxpayerCategory -> taxpayerCategory.getTaxRegimes().getId().equals(taxRegimes.getId()))
                 .toList();
         if (filteredTaxpayerCategories.size() != choiceTaxpayerCategoryEnums.size()) {
             return new ArrayList<>();
@@ -52,13 +52,13 @@ public abstract class ChoiceFilter {
     }
 
     protected List<TaxFeatures> filterTaxFeatures(
-            TaxRegime taxRegime,
+            TaxRegimes taxRegimes,
             List<TaxFeatures> taxFeatures,
             List<TaxFeatureEnum> choiceTaxFeaturesEnums
     ) {
         List<TaxFeatures> filteredTaxFeatures = taxFeatures
                 .stream()
-                .filter(taxFeature -> taxFeature.getTaxRegime().getId().equals(taxRegime.getId()))
+                .filter(taxFeature -> taxFeature.getTaxRegimes().getId().equals(taxRegimes.getId()))
                 .toList();
         if (filteredTaxFeatures.size() != choiceTaxFeaturesEnums.size()) {
             return new ArrayList<>();
