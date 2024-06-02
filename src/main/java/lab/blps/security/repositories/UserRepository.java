@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +19,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByLogin(String login);
     List<User> findAllByRolesName(RoleEnum role);
 
+    @Transactional
     @Modifying
     @Query(
-        "update User user set user.amountRequest = user.amountRequest - :reductionNumber WHERE user.id = :userId"
+        "update User user set user.amountRequest = user.amountRequest + :addNumberRequest WHERE user.id = :userId"
     )
-    void reduceAmountRequest(
+    void addAmountRequest(
         @Param("userId") Long userId,
-        @Param("reductionNumber") Integer reductionNumber
+        @Param("addNumberRequest") Integer addNumberRequest
+    );
+
+    @Transactional
+    @Modifying
+    @Query(
+        "update User user set user.amountRequest = user.amountRequest - :subNumberRequest WHERE user.id = :userId"
+    )
+    void subAmountRequest(
+        @Param("userId") Long userId,
+        @Param("subNumberRequest") Integer subNumberRequest
     );
 }

@@ -9,7 +9,8 @@ import lab.blps.security.bd.entities.RefreshToken;
 import lab.blps.security.bd.entities.Role;
 import lab.blps.security.bd.entities.RoleEnum;
 import lab.blps.security.bd.entities.User;
-import lab.blps.security.dto.*;
+import lab.blps.security.dto.request.*;
+import lab.blps.security.dto.response.JwtResponseDto;
 import lab.blps.security.jwt.JwtUtils;
 import lab.blps.security.model.UserDetailsImpl;
 import lab.blps.security.repositories.RoleRepository;
@@ -121,12 +122,12 @@ public class AuthorizationController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponseDto("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponseDto("Пользователь успешно зарегистрирован!"));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser(@Valid @RequestBody LogoutRequestDto logOutRequest) {
         refreshTokenService.deleteByUserId(logOutRequest.getUserId());
-        return ResponseEntity.ok(new MessageResponseDto("Log out successful!"));
+        return ResponseEntity.ok(new MessageResponseDto("Пользователь успешно вышел!"));
     }
 }

@@ -29,7 +29,11 @@ public class UserService {
         return user.getAmountRequest() > 0;
     }
 
-    public void requestFee(Long userId, int amountFee) {
-        userRepository.reduceAmountRequest(userId, amountFee);
+    public void addAmountRequest(Long userId, int addNumberRequest) {
+        userRepository.addAmountRequest(userId, addNumberRequest);
+    }
+
+    public void subAmountRequest(Long userId, int subNumberRequest) {
+        userRepository.subAmountRequest(userId, subNumberRequest);
     }
 }

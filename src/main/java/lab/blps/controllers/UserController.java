@@ -1,8 +1,8 @@
 package lab.blps.controllers;
 
 import jakarta.validation.Valid;
-import lab.blps.security.dto.AmountRequestDto;
-import lab.blps.security.dto.AmountRequestResponseDto;
+import lab.blps.security.dto.request.AmountRequestDto;
+import lab.blps.security.dto.response.AmountRequestResponseDto;
 import lab.blps.security.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

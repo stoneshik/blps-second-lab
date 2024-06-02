@@ -49,7 +49,7 @@ public class ChoiceTaxRegimeController {
             throw new NotEnoughAmountRequestException("Error: Not enough amount request");
         }
         try {
-            userService.requestFee(taxRegimeChoiceDto.getUserId(), 1);
+            userService.subAmountRequest(taxRegimeChoiceDto.getUserId(), 1);
         } catch (DataIntegrityViolationException e) {
             throw new NotEnoughAmountRequestException("Error: Not enough amount request");
         }

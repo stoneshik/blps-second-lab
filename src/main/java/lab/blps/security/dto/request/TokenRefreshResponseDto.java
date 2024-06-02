@@ -1,4 +1,4 @@
-package lab.blps.security.dto;
+package lab.blps.security.dto.request;
 
 import lombok.Data;
 
