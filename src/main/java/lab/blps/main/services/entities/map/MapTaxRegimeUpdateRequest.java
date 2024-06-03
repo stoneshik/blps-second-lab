@@ -11,7 +11,7 @@ import java.util.List;
 public class MapTaxRegimeUpdateRequest {
     public static TaxRegimeUpdateRequest mapFromDto(TaxRegimeUpdateRequestDto taxRegimeUpdateRequestDto) {
         TaxRegimeUpdateRequest taxRegimeUpdateRequest = new TaxRegimeUpdateRequest();
-        taxRegimeUpdateRequest.setId(taxRegimeUpdateRequest.getId());
+        taxRegimeUpdateRequest.setId(taxRegimeUpdateRequestDto.getId());
         List<TaxpayerCategoryEnum> taxpayerCategories = new ArrayList<>();
         for (String taxpayerCategory : taxRegimeUpdateRequestDto.getTaxpayerCategories()) {
             taxpayerCategories.add(TaxpayerCategoryEnum.valueOf(taxpayerCategory.toUpperCase()));

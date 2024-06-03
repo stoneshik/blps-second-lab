@@ -1,5 +1,6 @@
 package lab.blps.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lab.blps.dto.MessageResponseDto;
 import lab.blps.exceptions.IncorrectEnumConstant;
@@ -50,9 +51,9 @@ public class AdminController {
         try {
             taxRegimeCreateRequest = MapTaxRegimeCreateRequest.mapFromDto(taxRegimeCreateRequestDto);
         } catch (NullPointerException e) {
-            throw new WrongFormatUserRequestException("Error: Incorrect format of tax regime");
+            throw new WrongFormatUserRequestException("Ошибка: Некорректный формат данных");
         } catch (IllegalArgumentException e) {
-            throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
+            throw new IncorrectEnumConstant("Ошибка: Передана неправильная константа");
         }
         crudTaxRegimeService.create(taxRegimeCreateRequest);
         return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно добавлена!"));
@@ -76,10 +77,11 @@ public class AdminController {
         try {
             taxRegimeUpdateRequest = MapTaxRegimeUpdateRequest.mapFromDto(taxRegimeUpdateRequestDto);
         } catch (NullPointerException e) {
-            throw new WrongFormatUserRequestException("Error: Incorrect format of tax regime");
+            throw new WrongFormatUserRequestException("Ошибка: Некорректный формат данных");
         } catch (IllegalArgumentException e) {
-            throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
+            throw new IncorrectEnumConstant("Ошибка: Передана неправильная константа");
         }
+        checkTaxRegimeId(taxRegimeUpdateRequest.getId());
         crudTaxRegimeService.update(taxRegimeUpdateRequest);
         return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно обновлена!"));
     }
@@ -87,7 +89,16 @@ public class AdminController {
     @DeleteMapping("/tax-regime/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTaxRegime(@Valid @RequestBody TaxRegimeDeleteRequestDto taxRegimeDeleteRequestDto) {
+        checkTaxRegimeId(taxRegimeDeleteRequestDto.getId());
         crudTaxRegimeService.delete(taxRegimeDeleteRequestDto.getId());
         return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно удалена!"));
+    }
+
+    private void checkTaxRegimeId(Long id) {
+        if (crudTaxRegimeService.getById(id) == null) {
+            throw new EntityNotFoundException(
+                String.format("Ошибка: Налоговй режим id %s не найден", id)
+            );
+        }
     }
 }

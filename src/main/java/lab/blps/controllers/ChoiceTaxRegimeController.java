@@ -41,9 +41,9 @@ public class ChoiceTaxRegimeController {
         try {
             taxRegimeChoice = MapTaxRegimeChoice.mapFromDto(taxRegimeChoiceDto);
         } catch (NullPointerException e) {
-            throw new WrongFormatUserRequestException("Error: Incorrect format of tax regime");
+            throw new WrongFormatUserRequestException("Ошибка: Некорректный формат данных");
         } catch (IllegalArgumentException e) {
-            throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
+            throw new IncorrectEnumConstant("Ошибка: Передана неправильная константа");
         }
         requestFee(taxRegimeChoiceDto.getUserId(), 1);
         List<TaxRegimeWithFeaturesAndCategory> taxRegimes = choiceTaxRegimeService.choice(taxRegimeChoice);
@@ -56,12 +56,12 @@ public class ChoiceTaxRegimeController {
 
     private void requestFee(Long userId, Integer requestFee) {
         if (!userService.isAmountRequestEnough(userId)) {
-            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
+            throw new NotEnoughAmountRequestException("Ошибка: Не достаточно запросов на счете");
         }
         try {
             userService.subAmountRequest(userId, requestFee);
         } catch (DataIntegrityViolationException e) {
-            throw new NotEnoughAmountRequestException("Error: Not enough amount request");
+            throw new NotEnoughAmountRequestException("Ошибка: Не достаточно запросов на счете");
         }
     }
 }

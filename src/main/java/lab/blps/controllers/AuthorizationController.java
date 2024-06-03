@@ -84,14 +84,14 @@ public class AuthorizationController {
                 return ResponseEntity.ok(new TokenRefreshResponseDto(token, requestRefreshToken));
             })
             .orElseThrow(() ->
-                new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!")
+                new TokenRefreshException(requestRefreshToken, "Токен обновление не в базе данных!")
             );
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequestDto signUpRequest) {
         if (userRepository.existsByLogin(signUpRequest.getLogin())) {
-            throw new ResourceIsAlreadyExistsException("Error: Логин уже занят");
+            throw new ResourceIsAlreadyExistsException("Ошибка: Логин уже занят");
         }
         User user = new User(
             signUpRequest.getLogin(),
@@ -103,19 +103,19 @@ public class AuthorizationController {
         if (strRoles == null) {
             Role userRole = roleRepository
                 .findByName(RoleEnum.ROLE_USER)
-                .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Ошибка: Роль не найдена"));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 if (role.equals("admin")) {
                     Role adminRole = roleRepository
                         .findByName(RoleEnum.ROLE_ADMIN)
-                        .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        .orElseThrow(() -> new ResourceNotFoundException("Ошибка: Роль не найдена"));
                     roles.add(adminRole);
                 } else {
                     Role userRole = roleRepository
                         .findByName(RoleEnum.ROLE_USER)
-                        .orElseThrow(() -> new ResourceNotFoundException("Error: Role is not found."));
+                        .orElseThrow(() -> new ResourceNotFoundException("Ошибка: Роль не найдена"));
                     roles.add(userRole);
                 }
             });

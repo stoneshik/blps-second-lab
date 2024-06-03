@@ -1,5 +1,6 @@
 package lab.blps.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import lab.blps.dto.ErrorMessageDto;
 import lab.blps.exceptions.*;
 import org.slf4j.Logger;
@@ -22,11 +23,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorMessageDto resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ErrorMessageDto resourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.NOT_FOUND.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("There are some troubles with finding resource: {}", message);
@@ -35,11 +36,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(ResourceIsNotValidException.class)
     @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
-    public ErrorMessageDto resourceIsNotValid(ResourceIsNotValidException ex, WebRequest request) {
+    public ErrorMessageDto resourceIsNotValid(ResourceIsNotValidException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.NOT_ACCEPTABLE.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("This resource is not valid: {}", message);
@@ -48,15 +49,15 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
-    public ErrorMessageDto methodArgumentIsNotValid(MethodArgumentNotValidException ex, WebRequest request) {
+    public ErrorMessageDto methodArgumentIsNotValid(MethodArgumentNotValidException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.NOT_ACCEPTABLE.value(),
             new Date(),
-            ex.getBindingResult().getFieldErrors().stream()
+            e.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(ex.getMessage()),
+                .orElse(e.getMessage()),
             request.getDescription(false));
         LOGGER.warn("This method argument is not valid: {}", message);
         return message;
@@ -64,11 +65,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(TokenRefreshException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ErrorMessageDto refreshTokenException(TokenRefreshException ex, WebRequest request) {
+    public ErrorMessageDto refreshTokenException(TokenRefreshException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.FORBIDDEN.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("Refresh token time out: {}", message);
@@ -77,11 +78,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(ResourceIsAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorMessageDto resourceIsAlreadyExistsException(ResourceIsAlreadyExistsException ex, WebRequest request) {
+    public ErrorMessageDto resourceIsAlreadyExistsException(ResourceIsAlreadyExistsException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.CONFLICT.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("This resource is already exists: {}", message);
@@ -90,11 +91,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ErrorMessageDto accessDenied(Exception ex, WebRequest request) {
+    public ErrorMessageDto accessDenied(Exception e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.FORBIDDEN.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("Your token is expired or you need to authorize: {}", message);
@@ -103,11 +104,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(WrongFormatUserRequestException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessageDto wrongFormat(Exception ex, WebRequest request) {
+    public ErrorMessageDto wrongFormat(Exception e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.FORBIDDEN.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("Wrong format of user request: {}", message);
@@ -116,11 +117,11 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(IncorrectEnumConstant.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessageDto incorrectEnumConstant(Exception ex, WebRequest request) {
+    public ErrorMessageDto incorrectEnumConstant(Exception e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.FORBIDDEN.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("Incorrect enum constant: {}", message);
@@ -129,29 +130,41 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(NotEnoughAmountRequestException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessageDto notEnoughAmountRequest(Exception ex, WebRequest request) {
+    public ErrorMessageDto notEnoughAmountRequest(Exception e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
             HttpStatus.FORBIDDEN.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
         LOGGER.warn("Not enough amount request: {}", message);
         return message;
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessageDto globalExceptionHandler(Exception ex, WebRequest request) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessageDto entityNotFoundException(EntityNotFoundException e, WebRequest request) {
         ErrorMessageDto message = new ErrorMessageDto(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            HttpStatus.NOT_FOUND.value(),
             new Date(),
-            ex.getMessage(),
+            e.getMessage(),
             request.getDescription(false)
         );
-        LOGGER.warn("Exception type: {}", ex.getClass());
-        LOGGER.warn("Server sent error: {}", message);
+        LOGGER.warn("Not found entity in bd: {}", message);
         return message;
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessageDto globalExceptionHandler(Exception e, WebRequest request) {
+        ErrorMessageDto message = new ErrorMessageDto(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            new Date(),
+            e.getMessage(),
+            request.getDescription(false)
+        );
+        LOGGER.warn("Exception type: {}", e.getClass());
+        LOGGER.warn("Server sent error: {}", message);
+        return message;
+    }
 }

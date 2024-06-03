@@ -25,6 +25,10 @@ public class CrudTaxRegimeService {
     private final TaxFeaturesRepository taxFeaturesRepository;
     private final TaxpayerCategoriesRepository taxpayerCategoriesRepository;
 
+    public TaxRegimes getById(Long id) {
+        return taxRegimesRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     public void create(TaxRegimeCreateRequest taxRegimeCreateRequest) {
         TaxRegimes taxRegimes = new TaxRegimes();

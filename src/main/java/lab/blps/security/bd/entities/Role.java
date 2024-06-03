@@ -18,8 +18,4 @@ public class Role {
     private RoleEnum name;
 
     public Role() {}
-
-    public Role(RoleEnum name) {
-        this.name = name;
-    }
 }
