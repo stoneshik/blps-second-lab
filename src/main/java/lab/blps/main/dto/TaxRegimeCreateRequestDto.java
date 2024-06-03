@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TaxRegimeAddRequestDto {
+public class TaxRegimeCreateRequestDto {
     @JsonProperty("taxpayerCategories")
     private List<String> taxpayerCategories;
     @JsonProperty("taxFeatures")

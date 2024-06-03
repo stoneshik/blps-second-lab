@@ -19,8 +19,8 @@ import java.util.Set;
 )
 public class User{
     @Id
-    @GeneratedValue
-    @Column(name = "id", columnDefinition = "serial", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @NotBlank
     @Column(name = "login")

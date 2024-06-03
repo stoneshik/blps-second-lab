@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TaxRegimeAddRequest {
+public class TaxRegimeCreateRequest {
     private List<TaxpayerCategoryEnum> taxpayerCategories;
     private List<TaxFeatureEnum> taxFeatures;
     private String title;

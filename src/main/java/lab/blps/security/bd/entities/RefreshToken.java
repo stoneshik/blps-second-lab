@@ -9,8 +9,8 @@ import java.time.Instant;
 @Data
 public class RefreshToken {
     @Id
-    @GeneratedValue
-    @Column(name = "id", columnDefinition = "serial", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @OneToOne

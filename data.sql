@@ -3,7 +3,7 @@ VALUES
     (default, 'ROLE_ADMIN'),
     (default, 'ROLE_USER')
     ;
-INSERT INTO tax_regime (
+INSERT INTO tax_regimes (
     id,
     title,
     description,

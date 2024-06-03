@@ -4,20 +4,27 @@ import jakarta.validation.Valid;
 import lab.blps.dto.MessageResponseDto;
 import lab.blps.exceptions.IncorrectEnumConstant;
 import lab.blps.exceptions.WrongFormatUserRequestException;
-import lab.blps.main.dto.TaxRegimeAddRequestDto;
+import lab.blps.main.dto.TaxRegimeCreateRequestDto;
 import lab.blps.main.dto.TaxRegimeDeleteRequestDto;
 import lab.blps.main.dto.TaxRegimeUpdateRequestDto;
+import lab.blps.main.dto.TaxRegimeWithFeaturesAndCategoryDto;
 import lab.blps.main.services.CrudTaxRegimeService;
-import lab.blps.main.services.entities.TaxRegimeAddRequest;
+import lab.blps.main.services.entities.TaxRegimeCreateRequest;
 import lab.blps.main.services.entities.TaxRegimeUpdateRequest;
-import lab.blps.main.services.entities.map.MapTaxRegimeAddRequest;
+import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
+import lab.blps.main.services.entities.map.MapTaxRegimeCreateRequest;
 import lab.blps.main.services.entities.map.MapTaxRegimeUpdateRequest;
+import lab.blps.main.services.entities.map.MapTaxRegimeWithFeaturesAndCategory;
 import lab.blps.security.dto.request.AddAmountRequestDto;
 import lab.blps.security.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,17 +45,28 @@ public class AdminController {
 
     @PostMapping("/tax-regime/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createTaxRegime(@Valid @RequestBody TaxRegimeAddRequestDto taxRegimeAddRequestDto) {
-        TaxRegimeAddRequest taxRegimeAddRequest;
+    public ResponseEntity<?> createTaxRegime(@Valid @RequestBody TaxRegimeCreateRequestDto taxRegimeCreateRequestDto) {
+        TaxRegimeCreateRequest taxRegimeCreateRequest;
         try {
-            taxRegimeAddRequest = MapTaxRegimeAddRequest.mapFromDto(taxRegimeAddRequestDto);
+            taxRegimeCreateRequest = MapTaxRegimeCreateRequest.mapFromDto(taxRegimeCreateRequestDto);
         } catch (NullPointerException e) {
             throw new WrongFormatUserRequestException("Error: Incorrect format of tax regime");
         } catch (IllegalArgumentException e) {
             throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
         }
-        crudTaxRegimeService.create(taxRegimeAddRequest);
-        return ResponseEntity.ok(new MessageResponseDto("Пользователю успешно добавлено количество запросов!"));
+        crudTaxRegimeService.create(taxRegimeCreateRequest);
+        return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно добавлена!"));
+    }
+
+    @GetMapping("/tax-regime/read-all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> readAllTaxRegime() {
+        List<TaxRegimeWithFeaturesAndCategory> taxRegimes = crudTaxRegimeService.readAll();
+        List<TaxRegimeWithFeaturesAndCategoryDto> taxRegimeDtoList = new ArrayList<>();
+        for (TaxRegimeWithFeaturesAndCategory taxRegime : taxRegimes) {
+            taxRegimeDtoList.add(MapTaxRegimeWithFeaturesAndCategory.mapToDto(taxRegime));
+        }
+        return new ResponseEntity<>(taxRegimeDtoList, HttpStatus.OK);
     }
 
     @PostMapping("/tax-regime/update")
@@ -63,10 +81,10 @@ public class AdminController {
             throw new IncorrectEnumConstant("Error: Incorrect constant value in tax regime");
         }
         crudTaxRegimeService.update(taxRegimeUpdateRequest);
-        return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно добавлена!"));
+        return ResponseEntity.ok(new MessageResponseDto("Информация об налоговом режиме успешно обновлена!"));
     }
 
-    @DeleteMapping("/tax-tegime/delete")
+    @DeleteMapping("/tax-regime/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTaxRegime(@Valid @RequestBody TaxRegimeDeleteRequestDto taxRegimeDeleteRequestDto) {
         crudTaxRegimeService.delete(taxRegimeDeleteRequestDto.getId());

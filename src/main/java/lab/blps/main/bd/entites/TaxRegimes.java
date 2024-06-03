@@ -7,11 +7,11 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tax_regime")
+@Table(name = "tax_regimes")
 public class TaxRegimes {
     @Id
-    @GeneratedValue
-    @Column(name = "id", columnDefinition = "serial", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @NotBlank
     @Column(name = "title", length = 100)

@@ -8,12 +8,14 @@ import lab.blps.main.bd.entites.enums.TaxpayerCategoryEnum;
 import lab.blps.main.repositories.TaxFeaturesRepository;
 import lab.blps.main.repositories.TaxRegimesRepository;
 import lab.blps.main.repositories.TaxpayerCategoriesRepository;
-import lab.blps.main.services.entities.TaxRegimeAddRequest;
+import lab.blps.main.services.entities.TaxRegimeCreateRequest;
 import lab.blps.main.services.entities.TaxRegimeUpdateRequest;
+import lab.blps.main.services.entities.TaxRegimeWithFeaturesAndCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,19 +26,33 @@ public class CrudTaxRegimeService {
     private final TaxpayerCategoriesRepository taxpayerCategoriesRepository;
 
     @Transactional
-    public void create(TaxRegimeAddRequest taxRegimeAddRequest) {
+    public void create(TaxRegimeCreateRequest taxRegimeCreateRequest) {
         TaxRegimes taxRegimes = new TaxRegimes();
-        taxRegimes.setTitle(taxRegimeAddRequest.getTitle());
-        taxRegimes.setDescription(taxRegimeAddRequest.getDescription());
-        taxRegimes.setMaxAnnualIncomeThousands(taxRegimeAddRequest.getMaxAnnualIncomeThousands());
-        taxRegimes.setMaxNumberEmployees(taxRegimeAddRequest.getMaxNumberEmployees());
-        TaxRegimes newTaxRegime = taxRegimesRepository.saveAndFlush(new TaxRegimes());
-        if (taxRegimeAddRequest.getTaxFeatures() != null) {
-            saveTaxFeatures(newTaxRegime, taxRegimeAddRequest.getTaxFeatures());
+        taxRegimes.setTitle(taxRegimeCreateRequest.getTitle());
+        taxRegimes.setDescription(taxRegimeCreateRequest.getDescription());
+        taxRegimes.setMaxAnnualIncomeThousands(taxRegimeCreateRequest.getMaxAnnualIncomeThousands());
+        taxRegimes.setMaxNumberEmployees(taxRegimeCreateRequest.getMaxNumberEmployees());
+        TaxRegimes newTaxRegime = taxRegimesRepository.saveAndFlush(taxRegimes);
+        saveTaxFeatures(newTaxRegime, taxRegimeCreateRequest.getTaxFeatures());
+        saveTaxpayerCategories(newTaxRegime, taxRegimeCreateRequest.getTaxpayerCategories());
+    }
+
+    public List<TaxRegimeWithFeaturesAndCategory> readAll() {
+        List<TaxRegimes> taxRegimes = taxRegimesRepository.findAll();
+        List<TaxRegimeWithFeaturesAndCategory> taxRegimesWithFeaturesAndCategories = new ArrayList<>();
+        for (TaxRegimes taxRegime : taxRegimes) {
+            TaxRegimeWithFeaturesAndCategory taxRegimeWithFeaturesAndCategory = new TaxRegimeWithFeaturesAndCategory(
+                taxRegime.getId(),
+                taxRegime.getTitle(),
+                taxRegime.getDescription(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                taxRegime.getMaxAnnualIncomeThousands(),
+                taxRegime.getMaxNumberEmployees()
+            );
+            taxRegimesWithFeaturesAndCategories.add(taxRegimeWithFeaturesAndCategory);
         }
-        if (taxRegimeAddRequest.getTaxpayerCategories() != null) {
-            saveTaxpayerCategories(newTaxRegime, taxRegimeAddRequest.getTaxpayerCategories());
-        }
+        return taxRegimesWithFeaturesAndCategories;
     }
 
     @Transactional
@@ -47,17 +63,25 @@ public class CrudTaxRegimeService {
         taxRegimes.setDescription(taxRegimeUpdateRequest.getDescription());
         taxRegimes.setMaxAnnualIncomeThousands(taxRegimeUpdateRequest.getMaxAnnualIncomeThousands());
         taxRegimes.setMaxNumberEmployees(taxRegimeUpdateRequest.getMaxNumberEmployees());
-        TaxRegimes newTaxRegime = taxRegimesRepository.saveAndFlush(new TaxRegimes());
-        if (taxRegimeUpdateRequest.getTaxFeatures() != null) {
-            saveTaxFeatures(newTaxRegime, taxRegimeUpdateRequest.getTaxFeatures());
+        taxRegimesRepository.update(
+            taxRegimes.getId(),
+            taxRegimes.getTitle(),
+            taxRegimes.getDescription(),
+            taxRegimes.getMaxAnnualIncomeThousands(),
+            taxRegimes.getMaxNumberEmployees()
+        );
+        for (TaxFeatureEnum taxFeatureEnum : taxRegimeUpdateRequest.getTaxFeatures()) {
+            taxFeaturesRepository.update(taxRegimes.getId(), taxFeatureEnum);
         }
-        if (taxRegimeUpdateRequest.getTaxpayerCategories() != null) {
-            saveTaxpayerCategories(newTaxRegime, taxRegimeUpdateRequest.getTaxpayerCategories());
+        for (TaxpayerCategoryEnum taxpayerCategoryEnum : taxRegimeUpdateRequest.getTaxpayerCategories()) {
+            taxpayerCategoriesRepository.update(taxRegimes.getId(), taxpayerCategoryEnum);
         }
     }
 
     public void delete(Long taxRegimeId) {
-        taxRegimesRepository.delete(taxRegimeId);
+        List<Long> ids = new ArrayList<>();
+        ids.add(taxRegimeId);
+        taxRegimesRepository.deleteAllByIdInBatch(ids);
     }
 
     private void saveTaxFeatures(TaxRegimes newTaxRegime, List<TaxFeatureEnum> taxFeaturesEnum) {
@@ -65,7 +89,7 @@ public class CrudTaxRegimeService {
             TaxFeatures taxFeatures = new TaxFeatures();
             taxFeatures.setTaxRegimes(newTaxRegime);
             taxFeatures.setTaxFeatureEnum(taxFeatureEnum);
-            taxFeaturesRepository.save(taxFeatures);
+            taxFeaturesRepository.saveAndFlush(taxFeatures);
         }
     }
 
@@ -74,7 +98,7 @@ public class CrudTaxRegimeService {
             TaxpayerCategories taxpayerCategories = new TaxpayerCategories();
             taxpayerCategories.setTaxRegimes(newTaxRegime);
             taxpayerCategories.setTaxpayerCategoryEnum(taxpayerCategoryEnum);
-            taxpayerCategoriesRepository.save(taxpayerCategories);
+            taxpayerCategoriesRepository.saveAndFlush(taxpayerCategories);
         }
     }
 }

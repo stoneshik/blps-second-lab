@@ -62,6 +62,17 @@ public interface TaxRegimesRepository extends JpaRepository<TaxRegimes, Long> {
 
     @Transactional
     @Modifying
-    @Query("delete from TaxFeatures tf where tf.id=:id")
-    void delete(@Param("id") Long id);
+    @Query(
+        "update TaxRegimes tr set tr.title = :title, " +
+            "tr.description = :description, " +
+            "tr.maxAnnualIncomeThousands = :max_annual_income_thousands, " +
+            "tr.maxNumberEmployees = :max_number_employees WHERE tr.id = :id"
+    )
+    void update(
+        @Param("id") Long id,
+        @Param("title") String title,
+        @Param("description") String description,
+        @Param("max_annual_income_thousands") Long maxAnnualIncomeThousands,
+        @Param("max_number_employees") Long maxNumberEmployees
+    );
 }
